@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@pinia/nuxt": "^0.5.1",
+    "npx": "^10.2.2",
+    "pinia": "^2.1.7"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.5"
+  }
+}

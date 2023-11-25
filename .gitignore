@@ -2,3 +2,9 @@
 *.css.map
 *.sass.map
 *.scss.map
+
+.idea
+../.idea
+
+/node_modules
+

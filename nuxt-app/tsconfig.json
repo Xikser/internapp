@@ -1,0 +1,47 @@
+{
+    // https://nuxt.com/docs/guide/concepts/typescript
+    "extends": "./.nuxt/tsconfig.json",
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "strict": true,
+        "jsx": "preserve",
+        "sourceMap": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "ignoreDeprecations": "5.0",
+        "suppressImplicitAnyIndexErrors": true,
+        "skipLibCheck": true,
+        "lib": [
+            "esnext",
+            "es6",
+            "dom",
+            "dom.iterable"
+        ],
+        "types": [
+            "@types/node",
+            "vite/client",
+        ],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "./*"
+            ]
+        }
+    },
+    "ts-node": {
+        "compilerOptions": {
+            "module": "CommonJS"
+        }
+    },
+    "include": [
+        ".nuxt/nuxt.d.ts",
+        "**/*.ts",
+        "**/*.d.ts",
+        "**/*.tsx",
+        "**/*.vue",
+    ]
+}
