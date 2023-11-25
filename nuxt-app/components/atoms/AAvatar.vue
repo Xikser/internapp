@@ -21,6 +21,6 @@ export default defineComponent({
 <style scoped lang="scss">
 .a-avatar {
 	@apply relative rounded-full;
-	//@apply max-w-[230px] max-h-[230px] h-full w-full;
+	@apply max-w-[230px] max-h-[230px];
 }
 </style>

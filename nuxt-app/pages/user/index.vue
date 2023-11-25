@@ -1,11 +1,12 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import inputConfig from "@/pages/user/data/config";
+import useInputConfig from "@/pages/user/data/config";
+
 export default defineComponent({
 	name: 'UserView',
-	setup () {
+	setup() {
 		return {
-			inputConfig
+			useInputConfig,
 		}
 	}
 })
@@ -19,7 +20,7 @@ export default defineComponent({
 
 		<div class="user-panel__content">
 			<OrganismsOUserPanel
-				:inputConfig="inputConfig"
+				:configs="useInputConfig"
 			/>
 		</div>
 	</section>

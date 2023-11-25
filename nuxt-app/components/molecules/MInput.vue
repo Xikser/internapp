@@ -1,20 +1,19 @@
 <script lang="ts">
 import {defineComponent,} from 'vue'
 import type {Ref, PropType} from 'vue'
-import useRegexp from "@/composables/useRegexp";
 import debounce from "@/utils/debounce";
 import type {IInputConfig} from "@/pages/user/data/config";
 
 export default defineComponent({
 	name: 'MInput',
-	methods: {useRegexp},
 	props: {
 		config: {
 			type: Object as PropType<IInputConfig>,
 			required: true
 		}
 	},
-	setup(props) {
+	emits: ['update:modelValue'],
+	setup(props, ctx) {
 		const {config} = props
 		const value = ref('') as Ref<string>
 		const isError = ref(false) as Ref<boolean>
@@ -26,11 +25,13 @@ export default defineComponent({
 
 			if (target.value === '') {
 				setErrorState(config!.errors!.empty!.message);
-			} else if (!useRegexp().onlyLetters.test(target.value)) {
+			} else if (!config.regexp.test(target.value)) {
 				setErrorState(config!.errors!.invalidValue!.message);
 			} else {
 				clearErrorState();
 			}
+
+			ctx.emit('update:modelValue')
 		}, 300);
 
 		const setErrorState = (message: string): void => {
@@ -64,7 +65,7 @@ export default defineComponent({
 		:success="isSuccess"
 		:error="isError"
 		:regexp="config.regexp"
-		:max-length="config.maxLength"
+		:max-length="config.maxLength ?? 999999"
 		@input="validateInput"
 	>
 		<template

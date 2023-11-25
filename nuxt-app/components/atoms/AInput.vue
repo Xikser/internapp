@@ -94,7 +94,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .a-input {
-	@apply relative flex flex-col gap-4 w-full;
+	@apply relative flex flex-col gap-2 w-full;
 
 	&__input {
 		@apply w-full rounded-md border border-solid border-black;
