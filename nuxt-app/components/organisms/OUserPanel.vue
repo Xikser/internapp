@@ -15,7 +15,7 @@ export default defineComponent({
 		const showAvatarInput = ref(false) as Ref<boolean>
 		const avatarLink = ref('https://static.thenounproject.com/png/5163891-200.png')
 		const newAvatarValue = ref('') as Ref<string>
-
+		const avatarButtonStatus = ref(false) as Ref<boolean>;
 		const toggleAvatarInput = (): void => {
 			showAvatarInput.value = !showAvatarInput.value
 		}
@@ -32,13 +32,19 @@ export default defineComponent({
 		// https://static.thenounproject.com/png/5163891-200.png
 		// https://i.pngimg.me/thumb/f/720/5ff843fbee.jpg
 
+		function handleAvatarButtonStatus (e: any): void {
+			avatarButtonStatus.value = e.value
+		}
+
 		return {
 			toggleAvatarInput,
 			showAvatarInput,
 			newAvatarValue,
 			avatarLink,
 			updateAvatar,
-			updateNewAvatarValue
+			updateNewAvatarValue,
+			handleAvatarButtonStatus,
+			avatarButtonStatus
 		}
 	}
 })
@@ -69,6 +75,7 @@ export default defineComponent({
 					v-if="showAvatarInput"
 					:config="configs().avatarInputConfig"
 					@input="updateNewAvatarValue"
+					@on-error="handleAvatarButtonStatus"
 				/>
 
 				<AtomsAButton
@@ -86,6 +93,7 @@ export default defineComponent({
 					v-else
 					text="Update"
 					variant="primary"
+					:disabled="avatarButtonStatus"
 					@click="updateAvatar"
 				>
 				</AtomsAButton>

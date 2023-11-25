@@ -12,7 +12,7 @@ export default defineComponent({
 			required: true
 		}
 	},
-	emits: ['update:modelValue'],
+	emits: ['update:modelValue', 'onError'],
 	setup(props, ctx) {
 		const {config} = props
 		const value = ref('') as Ref<string>
@@ -32,7 +32,8 @@ export default defineComponent({
 			}
 
 			ctx.emit('update:modelValue')
-		}, 300);
+			ctx.emit('onError', isError)
+		}, 200);
 
 		const setErrorState = (message: string): void => {
 			isError.value = true;

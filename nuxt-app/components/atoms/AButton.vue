@@ -2,7 +2,7 @@
 import {defineComponent} from 'vue'
 import type {PropType} from 'vue'
 
-type TVariant = 'primary' | 'secondary'
+type TVariant = 'primary' | 'secondary' | 'tertiary'
 
 export default defineComponent({
 	name: "AButton",
@@ -14,6 +14,10 @@ export default defineComponent({
 		variant: {
 			type: String as PropType<TVariant>,
 			default: 'primary'
+		},
+		disabled: {
+			type: Boolean,
+			default: false
 		}
 	},
 	emits: ['click'],
@@ -34,8 +38,11 @@ export default defineComponent({
 		class="a-button"
 		:class="{
 			'a-button--primary': variant === 'primary',
-			'a-button--secondary': variant === 'secondary'
+			'a-button--secondary': variant === 'secondary',
+			'a-button--tertiary': variant === 'tertiary',
+			'a-button--disabled': disabled
 		}"
+		:disabled="disabled"
 		@click="onClick"
 	>
 		<slot name="before-text"/>
@@ -51,12 +58,22 @@ export default defineComponent({
 
 	&--primary {
 		@apply bg-green-700 text-white;
-		@apply hover:bg-green-600;
+		@apply active:hover:bg-green-600;
 	}
 
 	&--secondary {
 		@apply bg-white text-black border border-black border-solid;
-		@apply hover:bg-gray-200;
+		@apply active:hover:bg-gray-200;
+	}
+
+	&--tertiary {
+		@apply rounded-full #{!important};
+		@apply bg-green-700 text-white;
+		@apply active:hover:bg-green-600;
+	}
+
+	&--disabled {
+		@apply bg-gray-400 text-gray-700 pointer-events-none;
 	}
 }
 </style>
