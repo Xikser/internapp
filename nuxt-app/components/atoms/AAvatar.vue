@@ -20,7 +20,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .a-avatar {
-	@apply relative rounded-full;
-	@apply max-w-[230px] max-h-[230px];
+	@apply relative rounded-full overflow-hidden;
+	@apply w-full;
 }
 </style>

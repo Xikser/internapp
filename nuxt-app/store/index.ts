@@ -1,16 +1,37 @@
 import {defineStore} from 'pinia'
 import type {StoreDefinition} from 'pinia'
 
-type TState = {
-	test: string
+interface IUsers {
+	id: number
+	email: string
+	first_name: string
+	last_name: string
+	avatar: string
 }
 
-type TGetters = {}
+type TState = {
+	users: IUsers[]
+}
 
-type TActions = {}
+type TGetters = {
+	getUsers: () => IUsers[]
+}
+
+type TActions = {
+	// fetchUsers: () => Promise<void>
+}
 
 export const useMainStore: StoreDefinition<'mainStore', TState, TGetters, TActions> = defineStore('mainStore', {
 	state: (): TState => ({
-		test: ''
-	})
+		users: [],
+	}),
+	getters: {
+		getUsers: (state: TState) => state.users
+	},
+	actions: {
+
+		// saveDataToStore () {
+		//
+		// }
+	}
 })
