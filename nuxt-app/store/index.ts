@@ -10,28 +10,45 @@ interface IUsers {
 }
 
 type TState = {
+	pages: {
+		currentPage: number | null
+		perPage: number | null
+		total: number | null
+		totalPages: number | null
+	}
 	users: IUsers[]
 }
 
 type TGetters = {
-	getUsers: () => IUsers[]
+	getUsers: (state: TState) => IUsers[]
 }
 
 type TActions = {
-	// fetchUsers: () => Promise<void>
+	saveDataToStore: (payload: any) => void
 }
 
 export const useMainStore: StoreDefinition<'mainStore', TState, TGetters, TActions> = defineStore('mainStore', {
 	state: (): TState => ({
+		pages: {
+			currentPage: 1,
+			perPage: null,
+			total: null,
+			totalPages: null
+		},
 		users: [],
 	}),
 	getters: {
 		getUsers: (state: TState) => state.users
 	},
 	actions: {
-
-		// saveDataToStore () {
-		//
-		// }
+		saveDataToStore (payload: any): void {
+			this.pages = {
+				currentPage: payload.page,
+				perPage: payload.per_page,
+				total: payload.total,
+				totalPages: payload.total_pages,
+			}
+			this.users = payload.data
+		}
 	}
 })

@@ -2,7 +2,7 @@
 import {defineComponent} from 'vue'
 import type {PropType} from 'vue'
 
-type TVariant = 'primary' | 'secondary' | 'tertiary' | 'icon'
+type TVariant = 'primary' | 'secondary' | 'tertiary' | 'quaternary' | 'icon'
 
 export default defineComponent({
 	name: "AButton",
@@ -40,6 +40,7 @@ export default defineComponent({
 			'a-button--primary': variant === 'primary',
 			'a-button--secondary': variant === 'secondary',
 			'a-button--tertiary': variant === 'tertiary',
+			'a-button--quaternary': variant === 'quaternary',
 			'a-button--icon': variant === 'icon',
 			'a-button--disabled': disabled
 		}"
@@ -71,6 +72,16 @@ export default defineComponent({
 		@apply rounded-full #{!important};
 		@apply bg-green-700 text-white;
 		@apply active:hover:bg-green-600;
+	}
+
+	&--quaternary {
+		@apply p-0 rounded-none;
+		@apply bg-white text-green-700 border border-solid border-gray-700;
+		@apply hover:bg-green-700 hover:text-white;
+
+		&-active {
+			@apply bg-green-700 text-white;
+		}
 	}
 
 	&--icon {

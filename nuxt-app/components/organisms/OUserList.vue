@@ -1,5 +1,28 @@
-<script setup lang="ts">
+<script lang="ts">
+import {defineComponent, computed} from 'vue'
 
+export default defineComponent({
+	name: 'OUserList',
+	props: {
+		users: {
+			type: Object,
+			required: false
+		}
+	},
+	setup(props) {
+		const computedUsers = computed((): any => {
+			return props!.users!.map((user: any) => ({
+				...user,
+				fullName: `${user.first_name} ${user.last_name}`
+			}));
+
+		})
+
+		return {
+			computedUsers
+		}
+	}
+})
 </script>
 
 <template>
@@ -11,49 +34,29 @@
 		</li>
 
 		<li
+			v-for="user in computedUsers"
+			:key="user.id"
 			class="users-list__item"
 		>
 			<div class="users-list__avatar">
-				<AtomsAAvatar link="https://i.pngimg.me/thumb/f/720/5ff843fbee.jpg"/>
+				<AtomsAAvatar :link="user.avatar || 'https://i.pngimg.me/thumb/f/720/5ff843fbee.jpg'"/>
 			</div>
-			<p class="users-list__fullname">full name</p>
+			<p class="users-list__fullname">{{ user.fullName }}</p>
 
 			<div class="users-list__actions">
 				<AtomsAButton
 					text=""
 					variant="icon"
 				>
-					<template #before-text><span class="material-icons">add</span></template>
+					<template #before-text>
+						<span class="material-icons text-gray-400">edit_square</span>
+					</template>
 				</AtomsAButton>
 				<AtomsAButton
 					text=""
 					variant="icon"
 				>
-					<template #before-text><span class="material-icons">remove</span></template>
-				</AtomsAButton>
-			</div>
-		</li>
-
-		<li
-			class="users-list__item"
-		>
-			<div class="users-list__avatar">
-				<AtomsAAvatar link="https://i.pngimg.me/thumb/f/720/5ff843fbee.jpg"/>
-			</div>
-			<p class="users-list__fullname">full name</p>
-
-			<div class="users-list__actions">
-				<AtomsAButton
-					text=""
-					variant="icon"
-				>
-					<template #before-text><span class="material-icons">add</span></template>
-				</AtomsAButton>
-				<AtomsAButton
-					text=""
-					variant="icon"
-				>
-					<template #before-text><span class="material-icons">remove</span></template>
+					<template #before-text><span class="material-icons text-gray-400">delete</span></template>
 				</AtomsAButton>
 			</div>
 		</li>
@@ -62,7 +65,7 @@
 
 <style scoped lang="scss">
 .users-list {
-	@apply w-full pt-8;
+	@apply w-full;
 	@apply flex flex-col gap-y-4;
 	@apply relative;
 
@@ -100,6 +103,7 @@
 	&__avatar {
 		@apply w-full max-w-[5%] min-w-[40px];
 	}
+
 	//
 	//&__fullname {
 	//	@apply w-full;

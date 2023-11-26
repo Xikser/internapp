@@ -1,5 +1,6 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
+import {storeToRefs} from 'pinia'
 import type {Ref} from 'vue'
 import {useMainStore} from '@/store'
 import OUserList from "@/components/organisms/OUserList.vue";
@@ -8,17 +9,33 @@ export default defineComponent({
 	components: {OUserList},
 	async setup() {
 		const mainStore = useMainStore()
+		const {saveDataToStore} = mainStore
+		let page = ref(1) as Ref<number>
+		let totalPages = ref(0) as Ref<number>
 
-		const page = ref(1) as Ref<number>
-
-		const {data} = await useAsyncData('users', (): Promise<any> => $fetch('https://reqres.in/api/users', {
-				params: {
-					page: page.value
-				}
-			}), {
+		const {
+			data: users,
+		} = await useAsyncData('users', async (): Promise<any> =>
+				await $fetch('https://reqres.in/api/users', {
+					params: {
+						page: page.value
+					}
+				}), {
 				watch: [page]
 			}
 		)
+
+		watch(users, (newData) => {
+			if (newData) {
+				saveDataToStore(newData);
+				totalPages.value = newData.total_pages
+			}
+		}, {immediate: true, deep: true});
+
+		const updateCurrentPage = (newPage: number): void => {
+			console.log(newPage)
+			page.value = newPage
+		}
 
 		const onClick = (): void => {
 			console.log('click')
@@ -26,7 +43,10 @@ export default defineComponent({
 
 		return {
 			onClick,
-			data
+			users,
+			page,
+			totalPages,
+			updateCurrentPage
 		}
 	}
 })
@@ -49,7 +69,7 @@ export default defineComponent({
 				<AtomsAButton
 					text="Add User"
 					variant="tertiary"
-					class="max-w-[150px]"
+					class="max-w-[130px]"
 					@click="() => {console.log('click')}"
 				>
 					<template #before-text>
@@ -58,7 +78,13 @@ export default defineComponent({
 				</AtomsAButton>
 			</div>
 
-			<OUserList />
+			<OUserList v-if="users.data && users.data.length" :users="users.data"/>
+
+			<MoleculesMPagination
+				:curr-page="page"
+				:total-pages="totalPages"
+				@update-page="updateCurrentPage"
+			/>
 		</div>
 	</section>
 </template>
@@ -79,6 +105,7 @@ export default defineComponent({
 		@apply w-full;
 		@apply p-12;
 		@apply bg-white shadow rounded-md;
+		@apply flex flex-col gap-y-12;
 	}
 }
 </style>
