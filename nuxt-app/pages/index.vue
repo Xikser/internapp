@@ -4,6 +4,7 @@ import {storeToRefs} from 'pinia'
 import type {Ref} from 'vue'
 import {useMainStore} from '@/store'
 import OUserList from "@/components/organisms/OUserList.vue";
+import useInputConfig from '@/pages/user/data/config'
 
 export default defineComponent({
 	components: {OUserList},
@@ -12,6 +13,7 @@ export default defineComponent({
 		const {saveDataToStore} = mainStore
 		let page = ref(1) as Ref<number>
 		let totalPages = ref(0) as Ref<number>
+		const searchValue = ref('') as Ref<string>
 
 		const {
 			data: users,
@@ -33,20 +35,21 @@ export default defineComponent({
 		}, {immediate: true, deep: true});
 
 		const updateCurrentPage = (newPage: number): void => {
-			console.log(newPage)
 			page.value = newPage
 		}
 
-		const onClick = (): void => {
-			console.log('click')
+		const updateSearchValue = (e: any): void => {
+			searchValue.value = e.target.value
 		}
 
 		return {
-			onClick,
 			users,
 			page,
 			totalPages,
-			updateCurrentPage
+			updateCurrentPage,
+			useInputConfig,
+			searchValue,
+			updateSearchValue
 		}
 	}
 })
@@ -60,11 +63,11 @@ export default defineComponent({
 
 		<div class="users__content">
 			<div class="users__top-belt">
-				<!--				<MoleculesMInput-->
-				<!--					class="users__search-input"-->
-				<!--				/>-->
-
-				<input type="text" style="border: 2px solid black;">
+				<MoleculesMInput
+					@input="updateSearchValue"
+					:config="useInputConfig().searchInputConfig"
+					class="users__search-input max-w-[350px]"
+				/>
 
 				<AtomsAButton
 					text="Add User"
@@ -78,7 +81,7 @@ export default defineComponent({
 				</AtomsAButton>
 			</div>
 
-			<OUserList v-if="users.data && users.data.length" :users="users.data"/>
+			<OUserList v-if="users.data && users.data.length" :users="users.data" :search-value="searchValue"/>
 
 			<MoleculesMPagination
 				:curr-page="page"
@@ -107,5 +110,9 @@ export default defineComponent({
 		@apply bg-white shadow rounded-md;
 		@apply flex flex-col gap-y-12;
 	}
+}
+
+.users__search-input :deep(.a-input__input){
+	@apply bg-gray-100 border-0 rounded-md;
 }
 </style>

@@ -43,7 +43,7 @@ export default defineComponent({
 	},
 	emits: ['update:modelValue'],
 	setup(props, ctx) {
-		const {label, name, regexp} = props
+		const {label, name} = props
 
 		const ariaLabel = computed((): string => {
 			return label || name
@@ -88,6 +88,8 @@ export default defineComponent({
 			@input="updateValue"
 		/>
 
+		<slot name="before-icon"/>
+		<slot name="after-icon"/>
 		<slot name="errors"/>
 	</div>
 </template>

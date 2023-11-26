@@ -21,11 +21,11 @@ export default defineComponent({
 		const errorMessage = ref('') as Ref<string>
 
 		const validateInput = debounce((event: any) => {
-			const { target } = event as any;
+			const {target} = event as any;
 
-			if (target.value === '') {
+			if (target.value === '' && typeof config.errors.empty !== 'undefined') {
 				setErrorState(config!.errors!.empty!.message);
-			} else if (!config.regexp.test(target.value)) {
+			} else if (!config.regexp.test(target.value) && target.value !== '') {
 				setErrorState(config!.errors!.invalidValue!.message);
 			} else {
 				clearErrorState();
@@ -76,6 +76,16 @@ export default defineComponent({
 			{{ config.label || '' }}
 		</template>
 
+		<template v-if="config.beforeIcon" #before-icon>
+			<span class="material-icons a-input__before-icon">{{ config.beforeIcon }}</span>
+		</template>
+
+		<template v-if="config.afterIcon" #after-icon>
+			<div class="after-icon">
+				<span class="material-icons">{{ config.afterIcon }}</span>
+			</div>
+		</template>
+
 		<template v-if="isError"
 		          #errors
 		>
@@ -89,5 +99,9 @@ export default defineComponent({
 <style scoped lang="scss">
 .errors {
 	@apply text-red-700;
+}
+
+.after-icon {
+	@apply absolute right-[15px] top-[18px];
 }
 </style>

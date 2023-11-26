@@ -1,4 +1,5 @@
 import useRegexp from "@/composables/useRegexp";
+import {use} from "h3";
 
 export interface IInputConfig {
 	label: string
@@ -7,6 +8,8 @@ export interface IInputConfig {
 	placeholder: string
 	maxLength: number | null
 	regexp: RegExp
+	beforeIcon?: string
+	afterIcon?: string
 	errors: IError
 }
 
@@ -22,6 +25,7 @@ interface IError {
 export interface IUseInputConfig {
 	inputConfig: IInputConfig[]
 	avatarInputConfig: IInputConfig
+	searchInputConfig: IInputConfig
 }
 
 const useInputConfig = (): IUseInputConfig => {
@@ -78,9 +82,25 @@ const useInputConfig = (): IUseInputConfig => {
 		}
 	}
 
+	const searchInputConfig: IInputConfig = {
+		label: '',
+		name: 'search-input',
+		type: 'text',
+		placeholder: 'Search for users...',
+		maxLength: 32,
+		regexp: useRegexp().onlyLetters,
+		afterIcon: 'search',
+		errors: {
+			invalidValue: {
+				message: 'You entered an invalid value!'
+			}
+		}
+	}
+
 	return {
 		inputConfig,
-		avatarInputConfig
+		avatarInputConfig,
+		searchInputConfig
 	}
 }
 

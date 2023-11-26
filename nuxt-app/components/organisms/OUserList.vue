@@ -1,25 +1,38 @@
 <script lang="ts">
 import {defineComponent, computed} from 'vue'
+import type {PropType} from "vue";
+import type {IUser} from "@/interfaces";
 
 export default defineComponent({
 	name: 'OUserList',
 	props: {
 		users: {
-			type: Object,
+			type: Object as PropType<IUser[]>,
 			required: false
+		},
+		searchValue: {
+			type: String,
+			default: ''
 		}
 	},
 	setup(props) {
-		const computedUsers = computed((): any => {
-			return props!.users!.map((user: any) => ({
+		const computedUsers = computed((): IUser[] => {
+			return props!.users!.map((user: IUser) => ({
 				...user,
 				fullName: `${user.first_name} ${user.last_name}`
 			}));
-
 		})
 
+		const filteredUsers = computed(() => {
+			if (!computedUsers) return [];
+
+			return computedUsers.value.filter((user: IUser) => {
+				return user!.fullName!.toLowerCase().includes(props.searchValue.toLowerCase())
+			});
+		});
+
 		return {
-			computedUsers
+			filteredUsers
 		}
 	}
 })
@@ -34,7 +47,7 @@ export default defineComponent({
 		</li>
 
 		<li
-			v-for="user in computedUsers"
+			v-for="user in filteredUsers"
 			:key="user.id"
 			class="users-list__item"
 		>

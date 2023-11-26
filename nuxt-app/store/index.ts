@@ -1,13 +1,6 @@
 import {defineStore} from 'pinia'
 import type {StoreDefinition} from 'pinia'
-
-interface IUsers {
-	id: number
-	email: string
-	first_name: string
-	last_name: string
-	avatar: string
-}
+import type {IUser} from "@/interfaces";
 
 type TState = {
 	pages: {
@@ -16,11 +9,11 @@ type TState = {
 		total: number | null
 		totalPages: number | null
 	}
-	users: IUsers[]
+	users: IUser[]
 }
 
 type TGetters = {
-	getUsers: (state: TState) => IUsers[]
+	getUsers: (state: TState) => IUser[]
 }
 
 type TActions = {
@@ -35,7 +28,7 @@ export const useMainStore: StoreDefinition<'mainStore', TState, TGetters, TActio
 			total: null,
 			totalPages: null
 		},
-		users: [],
+		users: [] as IUser[],
 	}),
 	getters: {
 		getUsers: (state: TState) => state.users
