@@ -1,6 +1,7 @@
 <script lang="ts">
 import {defineComponent, ref, computed} from 'vue'
 import type {PropType, Ref} from "vue";
+import type {IUser} from "@/interfaces";
 
 export default defineComponent({
 	name: 'OUserPanel',
@@ -9,20 +10,46 @@ export default defineComponent({
 			type: Function,
 			default: () => {
 			}
+		},
+		user: {
+			type: Object as PropType<IUser>,
+			required: true
 		}
 	},
-	setup() {
+	emits: ['updateUser'],
+	setup(props, ctx) {
+		const {user} = props
 		const showAvatarInput = ref(false) as Ref<boolean>
-		const avatarLink = ref('https://static.thenounproject.com/png/5163891-200.png')
+		const avatarLink = ref(user.avatar) as Ref<string>
 		const newAvatarValue = ref('') as Ref<string>
 		const avatarButtonStatus = ref(false) as Ref<boolean>;
+
+		const inputErrors = ref({
+			first_name: true,
+			last_name: true
+		});
+
+		const updatedUserInfo: IUser = {
+			id: user.id,
+			first_name: user.first_name,
+			last_name: user.last_name,
+			email: user.email,
+			avatar: avatarLink.value
+		}
+
 		const toggleAvatarInput = (): void => {
 			showAvatarInput.value = !showAvatarInput.value
 		}
 
 		const updateAvatar = (): void => {
 			avatarLink.value = newAvatarValue.value || avatarLink.value;
+			updatedUserInfo.avatar = avatarLink.value
 			showAvatarInput.value = false;
+
+			ctx.emit('updateUser', updatedUserInfo)
+		}
+		const handleAvatarButtonStatus = (e: any): void => {
+			avatarButtonStatus.value = e.value
 		}
 
 		const updateNewAvatarValue = (event: any): void => {
@@ -32,9 +59,22 @@ export default defineComponent({
 		// https://static.thenounproject.com/png/5163891-200.png
 		// https://i.pngimg.me/thumb/f/720/5ff843fbee.jpg
 
-		function handleAvatarButtonStatus (e: any): void {
-			avatarButtonStatus.value = e.value
+		const updateUserInfo = (e: Event): void => {
+			const target = e.target as HTMLInputElement;
+			const {name, value} = target;
+
+			if (name in updatedUserInfo) {
+				(updatedUserInfo as Record<string, any>)[name] = value
+			}
 		}
+
+		const handleInputsStatus = (hasError: boolean, inputName: string): void => {
+			inputErrors.value[inputName] = hasError;
+		};
+
+		const isButtonDisabled = computed((): boolean => {
+			return Object.values(inputErrors.value).some(error => error);
+		});
 
 		return {
 			toggleAvatarInput,
@@ -44,7 +84,11 @@ export default defineComponent({
 			updateAvatar,
 			updateNewAvatarValue,
 			handleAvatarButtonStatus,
-			avatarButtonStatus
+			avatarButtonStatus,
+			updateUserInfo,
+			updatedUserInfo,
+			handleInputsStatus,
+			isButtonDisabled
 		}
 	}
 })
@@ -58,12 +102,16 @@ export default defineComponent({
 					v-for="input in configs().inputConfig"
 					:key="input.name"
 					:config="input"
+					@input="updateUserInfo"
+					@on-error="handleInputsStatus"
 				/>
 			</div>
 
 			<AtomsAButton
 				text="Update Details"
 				class="max-w-[150px]"
+				:disabled="isButtonDisabled"
+				@click="$emit('updateUser', updatedUserInfo)"
 			/>
 		</div>
 
@@ -82,7 +130,7 @@ export default defineComponent({
 					v-if="!showAvatarInput"
 					text="Change Photo"
 					variant="secondary"
-					@click="toggleAvatarInput "
+					@click="toggleAvatarInput"
 				>
 					<template #before-text>
 						<span class="material-icons">photo_camera</span>

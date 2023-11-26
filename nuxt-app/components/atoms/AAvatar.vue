@@ -22,5 +22,9 @@ export default defineComponent({
 .a-avatar {
 	@apply relative rounded-full overflow-hidden;
 	@apply w-full;
+
+	img {
+		@apply mx-auto;
+	}
 }
 </style>

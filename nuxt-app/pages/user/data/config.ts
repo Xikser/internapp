@@ -1,5 +1,4 @@
 import useRegexp from "@/composables/useRegexp";
-import {use} from "h3";
 
 export interface IInputConfig {
 	label: string
@@ -33,7 +32,7 @@ const useInputConfig = (): IUseInputConfig => {
 	const inputConfig: IInputConfig[] = [
 		{
 			label: 'First Name',
-			name: 'first-name',
+			name: 'first_name',
 			type: 'text',
 			placeholder: 'Enter value',
 			maxLength: 32,
@@ -49,7 +48,7 @@ const useInputConfig = (): IUseInputConfig => {
 		},
 		{
 			label: 'Last Name',
-			name: 'last-name',
+			name: 'last_name',
 			type: 'text',
 			placeholder: 'Enter value',
 			maxLength: 32,
@@ -67,7 +66,7 @@ const useInputConfig = (): IUseInputConfig => {
 
 	const avatarInputConfig: IInputConfig = {
 		label: 'New Avatar',
-		name: 'new-avatar',
+		name: 'new_avatar',
 		type: 'url',
 		placeholder: 'Paste new avatar link (https)',
 		maxLength: null,
@@ -84,7 +83,7 @@ const useInputConfig = (): IUseInputConfig => {
 
 	const searchInputConfig: IInputConfig = {
 		label: '',
-		name: 'search-input',
+		name: 'search_input',
 		type: 'text',
 		placeholder: 'Search for users...',
 		maxLength: 32,

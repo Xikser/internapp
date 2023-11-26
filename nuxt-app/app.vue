@@ -1,4 +1,4 @@
-<script lang="ts"></script>
+<script setup lang="ts"></script>
 
 <template>
 	<Head>
@@ -6,7 +6,7 @@
 		      rel="stylesheet">
 	</Head>
 	<NuxtLayout>
-		<NuxtPage />
+		<NuxtPage keepalive :page-key="route => route.fullPath"/>
 	</NuxtLayout>
 </template>
 

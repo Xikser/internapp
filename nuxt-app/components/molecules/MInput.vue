@@ -32,7 +32,7 @@ export default defineComponent({
 			}
 
 			ctx.emit('update:modelValue')
-			ctx.emit('onError', isError)
+			ctx.emit('onError', isError, config.name)
 		}, 200);
 
 		const setErrorState = (message: string): void => {

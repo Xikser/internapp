@@ -2,6 +2,8 @@
 import {defineComponent, computed} from 'vue'
 import type {PropType} from "vue";
 import type {IUser} from "@/interfaces";
+import {useMainStore} from "@/store";
+import {useRoute} from 'vue-router'
 
 export default defineComponent({
 	name: 'OUserList',
@@ -16,6 +18,11 @@ export default defineComponent({
 		}
 	},
 	setup(props) {
+		const runtimeConfig = useRuntimeConfig()
+		const mainStore = useMainStore()
+		const router = useRouter()
+		const {deleteUserFromStore} = mainStore
+
 		const computedUsers = computed((): IUser[] => {
 			return props!.users!.map((user: IUser) => ({
 				...user,
@@ -31,8 +38,18 @@ export default defineComponent({
 			});
 		});
 
+		const deleteUser = async (userID: number): Promise<void> => {
+			await $fetch(`${runtimeConfig.public.apiBase}/users/${userID}`, {
+				method: 'DELETE',
+			}).then(() => {
+				deleteUserFromStore(userID)
+			}).catch(e => console.error(`Delete user ERROR --- ${e}`))
+		}
+
 		return {
-			filteredUsers
+			filteredUsers,
+			deleteUser,
+			router
 		}
 	}
 })
@@ -60,6 +77,7 @@ export default defineComponent({
 				<AtomsAButton
 					text=""
 					variant="icon"
+					@click="router.push({ path: `/user/${user.id}` })"
 				>
 					<template #before-text>
 						<span class="material-icons text-gray-400">edit_square</span>
@@ -68,8 +86,11 @@ export default defineComponent({
 				<AtomsAButton
 					text=""
 					variant="icon"
+					@click="deleteUser(user.id)"
 				>
-					<template #before-text><span class="material-icons text-gray-400">delete</span></template>
+					<template #before-text>
+						<span class="material-icons text-gray-400">delete</span>
+					</template>
 				</AtomsAButton>
 			</div>
 		</li>

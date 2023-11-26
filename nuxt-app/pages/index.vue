@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
+import {defineComponent, ref, onMounted} from 'vue'
 import {storeToRefs} from 'pinia'
 import type {Ref} from 'vue'
 import {useMainStore} from '@/store'
@@ -9,7 +9,9 @@ import useInputConfig from '@/pages/user/data/config'
 export default defineComponent({
 	components: {OUserList},
 	async setup() {
+		const runtimeConfig = useRuntimeConfig()
 		const mainStore = useMainStore()
+		const {getUsers} = storeToRefs(useMainStore())
 		const {saveDataToStore} = mainStore
 		let page = ref(1) as Ref<number>
 		let totalPages = ref(0) as Ref<number>
@@ -18,10 +20,12 @@ export default defineComponent({
 		const {
 			data: users,
 		} = await useAsyncData('users', async (): Promise<any> =>
-				await $fetch('https://reqres.in/api/users', {
+				await $fetch(`${runtimeConfig.public.apiBase}/users`, {
 					params: {
 						page: page.value
 					}
+				}).catch(function (e) {
+					console.error(`Fetch data problem -- ${e}`)
 				}), {
 				watch: [page]
 			}
@@ -42,6 +46,19 @@ export default defineComponent({
 			searchValue.value = e.target.value
 		}
 
+		async function addUser() {
+			await $fetch(`${runtimeConfig.public.apiBase}/users/66`, {
+				method: 'PUT',
+				body: {
+					id: 66,
+					first_name: 'test',
+					last_name: 'test',
+					email: 'test',
+					avatar: 'test'
+				}
+			})
+		}
+
 		return {
 			users,
 			page,
@@ -49,7 +66,9 @@ export default defineComponent({
 			updateCurrentPage,
 			useInputConfig,
 			searchValue,
-			updateSearchValue
+			updateSearchValue,
+			getUsers,
+			addUser
 		}
 	}
 })
@@ -73,7 +92,7 @@ export default defineComponent({
 					text="Add User"
 					variant="tertiary"
 					class="max-w-[130px]"
-					@click="() => {console.log('click')}"
+					@click="addUser"
 				>
 					<template #before-text>
 						<span class="material-icons">add</span>
@@ -81,7 +100,11 @@ export default defineComponent({
 				</AtomsAButton>
 			</div>
 
-			<OUserList v-if="users.data && users.data.length" :users="users.data" :search-value="searchValue"/>
+			<OUserList
+				v-if="getUsers && getUsers.length"
+				:users="getUsers"
+				:search-value="searchValue"
+			/>
 
 			<MoleculesMPagination
 				:curr-page="page"
@@ -112,7 +135,7 @@ export default defineComponent({
 	}
 }
 
-.users__search-input :deep(.a-input__input){
+.users__search-input :deep(.a-input__input) {
 	@apply bg-gray-100 border-0 rounded-md;
 }
 </style>
