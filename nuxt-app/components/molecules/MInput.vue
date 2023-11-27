@@ -20,8 +20,8 @@ export default defineComponent({
 		const isSuccess = ref(false) as Ref<boolean>
 		const errorMessage = ref('') as Ref<string>
 
-		const validateInput = debounce((event: any) => {
-			const {target} = event as any;
+		const validateInput = debounce((event: Event) => {
+			const target = event.target as HTMLInputElement
 
 			if (target.value === '' && typeof config.errors.empty !== 'undefined') {
 				setErrorState(config!.errors!.empty!.message);

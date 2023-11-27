@@ -49,8 +49,9 @@ export default defineComponent({
 			return label || name
 		})
 
-		const updateValue = (event: any): void => {
-			ctx.emit('update:modelValue', event.target.value)
+		const updateValue = (event: Event): void => {
+			const target = event.target as HTMLInputElement
+			ctx.emit('update:modelValue', target.value)
 		}
 
 		return {

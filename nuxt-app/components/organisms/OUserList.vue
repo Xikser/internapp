@@ -29,7 +29,7 @@ export default defineComponent({
 			}));
 		})
 
-		const filteredUsers = computed(() => {
+		const filteredUsers = computed((): IUser[] => {
 			if (!computedUsers) return [];
 
 			return computedUsers.value.filter((user: IUser) => {

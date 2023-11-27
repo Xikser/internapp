@@ -48,12 +48,14 @@ export default defineComponent({
 
 			ctx.emit('update', newUserData)
 		}
+
 		const handleAvatarButtonStatus = (e: any): void => {
 			avatarButtonStatus.value = e.value
 		}
 
-		const updateNewAvatarValue = (event: any): void => {
-			newAvatarValue.value = event.target.value
+		const updateNewAvatarValue = (event: Event): void => {
+			const target = event.target as HTMLInputElement
+			newAvatarValue.value = target.value
 		}
 
 		const updateInfo = (e: Event): void => {
