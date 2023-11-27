@@ -1,29 +1,36 @@
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
+import {defineComponent, ref, computed} from 'vue'
 import {useRoute} from 'vue-router'
 import type {Ref} from "vue";
 
 import useInputConfig, {defaultUserObject} from "@/pages/user/data/config";
+import {useMainStore} from "@/store";
+import {storeToRefs} from "pinia";
 import type {IUser} from "@/interfaces";
 import useUpdateData from "@/composables/useUpdateData";
 
 export default defineComponent({
-	name: 'UserView',
+	name: 'Edit',
 	setup() {
 		const route = useRoute()
+		const {getUsers} = storeToRefs(useMainStore())
 		const currentUserID = ref(route.params.id) as Ref<string>
 
-		const user: IUser = {
-			...defaultUserObject,
-			id: Number(currentUserID.value)
-		}
+		const currentUser = computed((): IUser => {
+			return getUsers!.value.find((user: IUser) => user.id === Number(currentUserID.value))!
+		})
+
+		const userFullName = computed((): string => {
+			return `${currentUser!.value.first_name || ''} ${currentUser!.value.last_name || ''}`
+		})
 
 		return {
 			route,
 			useInputConfig,
 			currentUserID,
-			user,
-			useUpdateData,
+			currentUser,
+			userFullName,
+			useUpdateData
 		}
 	}
 })
@@ -31,15 +38,16 @@ export default defineComponent({
 
 <template>
 	<section
+		v-if="currentUser"
 		class="user-panel container"
 	>
 		<div class="user-panel__title">
-			<h1>Add User</h1>
+			<h1>Edit User: {{ userFullName }}</h1>
 		</div>
 
 		<div class="user-panel__content">
 			<OrganismsOUserPanel
-				:user="user"
+				:user="currentUser"
 				:configs="useInputConfig"
 				@update="useUpdateData"
 			/>

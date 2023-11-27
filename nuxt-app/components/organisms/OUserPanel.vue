@@ -16,7 +16,7 @@ export default defineComponent({
 			required: true
 		}
 	},
-	emits: ['updateUser'],
+	emits: ['update'],
 	setup(props, ctx) {
 		const {user} = props
 		const showAvatarInput = ref(false) as Ref<boolean>
@@ -29,7 +29,7 @@ export default defineComponent({
 			last_name: true
 		});
 
-		const updatedUserInfo: IUser = {
+		const newUserData: IUser = {
 			id: user.id,
 			first_name: user.first_name,
 			last_name: user.last_name,
@@ -43,10 +43,10 @@ export default defineComponent({
 
 		const updateAvatar = (): void => {
 			avatarLink.value = newAvatarValue.value || avatarLink.value;
-			updatedUserInfo.avatar = avatarLink.value
+			newUserData.avatar = avatarLink.value
 			showAvatarInput.value = false;
 
-			ctx.emit('updateUser', updatedUserInfo)
+			ctx.emit('update', newUserData)
 		}
 		const handleAvatarButtonStatus = (e: any): void => {
 			avatarButtonStatus.value = e.value
@@ -59,12 +59,12 @@ export default defineComponent({
 		// https://static.thenounproject.com/png/5163891-200.png
 		// https://i.pngimg.me/thumb/f/720/5ff843fbee.jpg
 
-		const updateUserInfo = (e: Event): void => {
+		const updateInfo = (e: Event): void => {
 			const target = e.target as HTMLInputElement;
 			const {name, value} = target;
 
-			if (name in updatedUserInfo) {
-				(updatedUserInfo as Record<string, any>)[name] = value
+			if (name in newUserData) {
+				(newUserData as Record<string, any>)[name] = value
 			}
 		}
 
@@ -85,8 +85,8 @@ export default defineComponent({
 			updateNewAvatarValue,
 			handleAvatarButtonStatus,
 			avatarButtonStatus,
-			updateUserInfo,
-			updatedUserInfo,
+			updateInfo,
+			newUserData,
 			handleInputsStatus,
 			isButtonDisabled
 		}
@@ -102,7 +102,7 @@ export default defineComponent({
 					v-for="input in configs().inputConfig"
 					:key="input.name"
 					:config="input"
-					@input="updateUserInfo"
+					@input="updateInfo"
 					@on-error="handleInputsStatus"
 				/>
 			</div>
@@ -111,7 +111,7 @@ export default defineComponent({
 				text="Update Details"
 				class="max-w-[150px]"
 				:disabled="isButtonDisabled"
-				@click="$emit('updateUser', updatedUserInfo)"
+				@click="$emit('update', newUserData)"
 			/>
 		</div>
 

@@ -77,7 +77,7 @@ export default defineComponent({
 				<AtomsAButton
 					text=""
 					variant="icon"
-					@click="router.push({ path: `/user/${user.id}` })"
+					@click="router.push({ path: `/edit-user/${user.id}` })"
 				>
 					<template #before-text>
 						<span class="material-icons text-gray-400">edit_square</span>
@@ -137,11 +137,6 @@ export default defineComponent({
 	&__avatar {
 		@apply w-full max-w-[5%] min-w-[40px];
 	}
-
-	//
-	//&__fullname {
-	//	@apply w-full;
-	//}
 
 	&__actions {
 		@apply w-full max-w-[80px] sm:ml-auto;

@@ -1,4 +1,5 @@
 import useRegexp from "@/composables/useRegexp";
+import type {IUser} from "@/interfaces";
 
 export interface IInputConfig {
 	label: string
@@ -101,6 +102,14 @@ const useInputConfig = (): IUseInputConfig => {
 		avatarInputConfig,
 		searchInputConfig
 	}
+}
+
+export const defaultUserObject: IUser = {
+	id: 0,
+	email: '',
+	first_name: '',
+	last_name: '',
+	avatar: 'https://i.pngimg.me/thumb/f/720/5ff843fbee.jpg'
 }
 
 export default useInputConfig

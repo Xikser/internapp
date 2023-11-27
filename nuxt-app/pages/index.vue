@@ -1,20 +1,25 @@
 <script lang="ts">
-import {defineComponent, ref, onMounted} from 'vue'
-import {storeToRefs} from 'pinia'
 import type {Ref} from 'vue'
+import {defineComponent, ref} from 'vue'
+import {storeToRefs} from 'pinia'
 import {useMainStore} from '@/store'
 import OUserList from "@/components/organisms/OUserList.vue";
 import useInputConfig from '@/pages/user/data/config'
+import {useRouter} from "vue-router";
+import type {IConvertedData} from "@/interfaces";
 
 export default defineComponent({
 	components: {OUserList},
-	async setup() {
+	async setup(props, ctx) {
 		const runtimeConfig = useRuntimeConfig()
 		const mainStore = useMainStore()
-		const {getUsers} = storeToRefs(useMainStore())
+		const router = useRouter()
+		const {getUsers, getPagesInfo} = storeToRefs(useMainStore())
 		const {saveDataToStore} = mainStore
 		let page = ref(1) as Ref<number>
-		let totalPages = ref(0) as Ref<number>
+		// let totalPages = ref(0) as Ref<number>
+		// let userAmount = ref(0) as Ref<number>
+		// let usersPerPage = ref(0) as Ref<number>
 		const searchValue = ref('') as Ref<string>
 
 		const {
@@ -33,8 +38,17 @@ export default defineComponent({
 
 		watch(users, (newData) => {
 			if (newData) {
-				saveDataToStore(newData);
-				totalPages.value = newData.total_pages
+				const convertedData: IConvertedData = {
+					pages: {
+						page: getPagesInfo.value.page ?? newData.page,
+						per_page: getPagesInfo.value.per_page ?? newData.per_page,
+						total: getPagesInfo.value.total ?? newData.total,
+						total_pages: getPagesInfo.value.total_pages ?? newData.total_pages,
+					},
+					users: newData.data
+				}
+
+				saveDataToStore(convertedData);
 			}
 		}, {immediate: true, deep: true});
 
@@ -42,33 +56,25 @@ export default defineComponent({
 			page.value = newPage
 		}
 
-		const updateSearchValue = (e: any): void => {
-			searchValue.value = e.target.value
+		const updateSearchValue = (e: Event): void => {
+			const target = e.target as HTMLInputElement
+			searchValue.value = target.value
 		}
 
-		async function addUser() {
-			await $fetch(`${runtimeConfig.public.apiBase}/users/66`, {
-				method: 'PUT',
-				body: {
-					id: 66,
-					first_name: 'test',
-					last_name: 'test',
-					email: 'test',
-					avatar: 'test'
-				}
-			})
+	    const addUser = (): void => {
+			router.push({ path: `/user/${getPagesInfo.value.total! + 1}` })
 		}
 
 		return {
 			users,
 			page,
-			totalPages,
 			updateCurrentPage,
 			useInputConfig,
 			searchValue,
 			updateSearchValue,
 			getUsers,
-			addUser
+			addUser,
+			getPagesInfo
 		}
 	}
 })
@@ -80,6 +86,9 @@ export default defineComponent({
 			<h1>User List</h1>
 		</div>
 
+		{{ getPagesInfo }}
+		{{ getUsers }}
+
 		<div class="users__content">
 			<div class="users__top-belt">
 				<MoleculesMInput
@@ -87,7 +96,6 @@ export default defineComponent({
 					:config="useInputConfig().searchInputConfig"
 					class="users__search-input max-w-[350px]"
 				/>
-
 				<AtomsAButton
 					text="Add User"
 					variant="tertiary"
@@ -108,7 +116,7 @@ export default defineComponent({
 
 			<MoleculesMPagination
 				:curr-page="page"
-				:total-pages="totalPages"
+				:total-pages="getPagesInfo.total_pages!"
 				@update-page="updateCurrentPage"
 			/>
 		</div>
