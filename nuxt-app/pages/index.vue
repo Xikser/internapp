@@ -17,9 +17,6 @@ export default defineComponent({
 		const {getUsers, getPagesInfo} = storeToRefs(useMainStore())
 		const {saveDataToStore} = mainStore
 		let page = ref(1) as Ref<number>
-		// let totalPages = ref(0) as Ref<number>
-		// let userAmount = ref(0) as Ref<number>
-		// let usersPerPage = ref(0) as Ref<number>
 		const searchValue = ref('') as Ref<string>
 
 		const {
@@ -40,10 +37,10 @@ export default defineComponent({
 			if (newData) {
 				const convertedData: IConvertedData = {
 					pages: {
-						page: getPagesInfo.value.page ?? newData.page,
-						per_page: getPagesInfo.value.per_page ?? newData.per_page,
-						total: getPagesInfo.value.total ?? newData.total,
-						total_pages: getPagesInfo.value.total_pages ?? newData.total_pages,
+						page: newData.page,
+						per_page: newData.per_page,
+						total: newData.total,
+						total_pages: newData.total_pages,
 					},
 					users: newData.data
 				}
@@ -85,9 +82,6 @@ export default defineComponent({
 		<div class="users__title">
 			<h1>User List</h1>
 		</div>
-
-		{{ getPagesInfo }}
-		{{ getUsers }}
 
 		<div class="users__content">
 			<div class="users__top-belt">

@@ -3,7 +3,6 @@ import {defineComponent, computed} from 'vue'
 import type {PropType} from "vue";
 import type {IUser} from "@/interfaces";
 import {useMainStore} from "@/store";
-import {useRoute} from 'vue-router'
 
 export default defineComponent({
 	name: 'OUserList',

@@ -25,7 +25,7 @@ export const useMainStore: TMainStore = defineStore('mainStore', {
 	state: (): TState => ({
 		users: [] as IUser[],
 		pagesInfo: {
-			page: 1,
+			page: null,
 			per_page: null,
 			total: null,
 			total_pages: null,
@@ -39,15 +39,9 @@ export const useMainStore: TMainStore = defineStore('mainStore', {
 		saveDataToStore(payload: IConvertedData): void {
 			this.pagesInfo = payload.pages
 			this.users = payload.users;
-
-			console.log('??')
-			console.log(payload)
-			console.log('??')
 		},
 		updateUserInStore(payload: IUser): void {
 			const userExist: boolean = this.users.some((user: IUser): boolean => user.id === payload.id)
-
-			console.log(payload)
 
 			if (userExist) {
 				this.users = this.users.map((user: IUser): IUser =>
@@ -55,13 +49,6 @@ export const useMainStore: TMainStore = defineStore('mainStore', {
 				);
 			} else {
 				this.users.push(payload)
-				this.pagesInfo = {
-					...this.pagesInfo,
-					total: payload.id,
-					total_pages: Math.ceil(payload.id / this.pagesInfo.per_page!)
-				}
-
-				console.log(this.pagesInfo)
 			}
 		},
 		deleteUserFromStore(payload: number): void {

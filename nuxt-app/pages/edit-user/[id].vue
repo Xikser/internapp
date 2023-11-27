@@ -3,7 +3,7 @@ import {defineComponent, ref, computed} from 'vue'
 import {useRoute} from 'vue-router'
 import type {Ref} from "vue";
 
-import useInputConfig, {defaultUserObject} from "@/pages/user/data/config";
+import useInputConfig from "@/pages/user/data/config";
 import {useMainStore} from "@/store";
 import {storeToRefs} from "pinia";
 import type {IUser} from "@/interfaces";

@@ -56,9 +56,6 @@ export default defineComponent({
 			newAvatarValue.value = event.target.value
 		}
 
-		// https://static.thenounproject.com/png/5163891-200.png
-		// https://i.pngimg.me/thumb/f/720/5ff843fbee.jpg
-
 		const updateInfo = (e: Event): void => {
 			const target = e.target as HTMLInputElement;
 			const {name, value} = target;
